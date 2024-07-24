@@ -1,50 +1,14 @@
-# Notable
+# Node JS - server
 
-<p>It's a Note making web app build in MERN stack showing all CRUD operations.</p>
+## Env
 
-You can visit the [Live website](https://notable-client.vercel.app)  
-
-## Table of Contents
-
-- [Description](#description)
-- [Features](#features)
-- [Tech](#tech)
-- [Screenshots](#screenshots)
-
-## Description
-
-This is a Note making website like any other websites like Evernote, Notion etc. where you can make notes about the study, time table, personal diary or any other stuff that you don't want to forget.
-
-## Features
-
-- used passport.js for Google OAuth Login or custom Email and Password login
-- user password hashed using bcrypt before saving into database
-- send reset passowrd link to user email in case of forgot password
-- ejs is used to create a HTML template to send to user email
-- apply express.js middleware to protect routes and data
-- making all CRUD operations to MongoDB database using Mongoose
-- to maintain continuous user session, jsonwebtoken is used
-- sentry added for effective error monitoring while production
-- global error handling in one place - globalErrorHandler.js
-
-
-## Tech
-<ul>
-<li>Node JS</li>
-<li>Express JS</li>
-<li>MongoDB - <i>NoSQL databse to store user data</i></li>
-<li>Passprt JS - <i>for Google OAuth login</i></li>
-<li>bcryptjs - <i>for hashing user password</i></li>
-<li>jsonwebtoken - <i>for creating token that maintain user logged in</i></li>
-<li>nodemailer - <i>send link to email to create new password in case of forgot password</i></li>
-<li>ejs - <i>create a HTML template to send link to user email</i></li>
-</ul>
-
-## Screenshots
-
-Here are the screenshots of my project:
-
-![Project Screenshot 1](https://notable-client.s3.ap-south-1.amazonaws.com/images/notable1.png)
-
-![Project Screenshot 2](https://notable-client.s3.ap-south-1.amazonaws.com/images/notable2.png)
-
+- NODE_ENV=production
+- CLIENT_URL (frontend wesite URL. like:- https://example.com)
+- MONGO_DB_URI (Mongo DB Atlas URL )
+- GOOGLE_OAUTH_CLIENT_ID
+- GOOGLE_OAUTH_CLIENT_SECRET
+- EXPIRES_IN (client session expiry in milliseconds. like :- 84600000 for 1 day)
+- MY_GMAIL_ID (Gmail Email ID)
+- MY_GMAIL_PASSWORD (16 character password)
+- ENCRYPTION_KEY (MUST be 32 character secret key of length)
+- ENCRYPTION_IV (MUST be 16 character secret key of length)
