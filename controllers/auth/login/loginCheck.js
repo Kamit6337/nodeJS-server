@@ -1,28 +1,17 @@
 import HandleGlobalError from "../../../utils/HandleGlobalError.js";
 import catchAsyncError from "../../../utils/catchAsyncError.js";
-import verifyWebToken from "../../../utils/verifyWebToken.js";
 import Req from "../../../utils/Req.js";
-import { User } from "../../../models/UserModel.js";
-import getCurrentTime from "../../../utils/javaScript/getCurrentTime.js";
+import User from "../../../models/UserModel.js";
+import { decrypt } from "../../../utils/encryption/encryptAndDecrypt.js";
 
 const loginCheck = catchAsyncError(async (req, res, next) => {
   const { token } = Req(req);
 
-  const decoded = verifyWebToken(token);
-
-  const currentMilli = getCurrentTime();
-
-  const expireTokenMin = 30 * 60 * 1000; //30 minutes
-  const diffeInMilli = decoded.expire - currentMilli;
-
-  if (diffeInMilli < expireTokenMin) {
-    return next(
-      new HandleGlobalError(
-        "Your Session has expired. Please Login Again.",
-        400
-      )
-    );
+  if (!token) {
+    throw new Error("Your do not have active session. Please Login");
   }
+
+  const decoded = decrypt(token);
 
   const findUser = await User.findOne({
     _id: decoded.id,
@@ -34,7 +23,7 @@ const loginCheck = catchAsyncError(async (req, res, next) => {
     );
   }
 
-  // MARK: CHECK UPDATEDAT WHEN PASSWORD UPDATE, SO LOGIN AGAIN IF PASSWORD RESET
+  // MARK: CHECK UPDATED-AT WHEN PASSWORD UPDATE, SO LOGIN AGAIN IF PASSWORD RESET
   const updatedAtInMilli = new Date(findUser.updatedAt).getTime();
 
   if (decoded.iat * 1000 + 5000 <= updatedAtInMilli) {

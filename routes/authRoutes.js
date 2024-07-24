@@ -1,15 +1,20 @@
 import { environment } from "../utils/environment.js";
 import express from "express";
 import passport from "passport";
-import { loginSuccess, logout } from "../controllers/auth/authController.js";
-import signup from "../controllers/auth/custom/signup.js";
-import loginCheck from "../controllers/auth/custom/loginCheck.js";
-import login from "../controllers/auth/custom/login.js";
-import forgotPassword from "../controllers/auth/custom/forgotPassword.js";
-import updateUserProfile from "../controllers/auth/custom/updateUserProfile.js";
-import newPassword from "../controllers/auth/custom/newPassword.js";
+import signup from "../controllers/auth/signup/signup.js";
+import loginCheck from "../controllers/auth/login/loginCheck.js";
+import login from "../controllers/auth/login/login.js";
+import forgotPassword from "../controllers/auth/forgot-password/forgotPassword.js";
+import updateUserProfile from "../controllers/auth/general/updateUserProfile.js";
+import newPassword from "../controllers/auth/forgot-password/newPassword.js";
+import OAuthLogin from "../controllers/auth/OAuth-login/OAuthLogin.js";
+import logout from "../controllers/auth/general/logout.js";
+import verifySignup from "../controllers/auth/signup/verifySignup.js";
 
 const router = express.Router();
+
+// NOTE: CONTINUOUS CHECK LOGIN
+router.get("/login/check", loginCheck);
 
 // NOTE: UPDATE USER PASSWORD
 router.patch("/update", updateUserProfile);
@@ -18,17 +23,15 @@ router.patch("/update", updateUserProfile);
 router.post("/forgot", forgotPassword);
 router.post("/newPassword", newPassword);
 
-// NOTE: CONTINUOUS CHECK LOGIN
-router.get("/login/check", loginCheck);
-
 // NOTE: CUSTOM SIGNUP AND LOGIN
 router.post("/signup", signup);
+router.post("/signup/verify", verifySignup);
 router.post("/login", login);
 
 // NOTE: OAUTH SIGNUP AND LOGIN
-router.get("/login/OAuth", loginSuccess);
+router.get("/login/OAuth", OAuthLogin);
 
-// NOTE: LOGOUT AND UPDATE USER
+// NOTE: LOGOUT
 router.get("/logout", logout);
 
 // NOTE: GOOGLE OAUTH

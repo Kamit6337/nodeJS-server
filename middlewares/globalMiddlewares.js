@@ -5,26 +5,20 @@ import passport from "passport";
 import { corsOptions } from "../utils/corsOptions.js";
 import session from "express-session";
 import expressSessionOptions from "../utils/expressSessionOptions.js";
+import helmet from "helmet";
+import xss from "xss-clean";
+import mongoSanitize from "express-mongo-sanitize";
 
 const globalMiddlewares = (app) => {
-  // The middleware will attempt to compress response bodies for all request that traverse through the middleware
-  //   app.use(compression());
+  app.use(helmet());
 
   app.use(cors(corsOptions));
 
-  // app.set("view engine", "ejs");
   // Serve static files from the public folder
   //   app.use(express.static(path.join(__dirname, "public")));
   app.use(express.static("public"));
 
-  // Middleware to create a time session of cookie (login, jwt)
-  // app.use(session(expressSessionOptions));
-  // app.use(cookieSession(cookieSessionOptions));
-
   app.use(session(expressSessionOptions));
-
-  // Middleware to parse cookies
-  // app.use(cookieParser());
 
   // Middleware to parse incoming body
   app.use(bodyParser.json());
@@ -33,10 +27,16 @@ const globalMiddlewares = (app) => {
   app.use(passport.session());
 
   // Middleware to parse JSON request bodies
-  app.use(express.json());
+  app.use(express.json({ limit: "10kb" }));
 
   // Middleware to parse URL-encoded request bodies (optional)
   app.use(express.urlencoded({ extended: true }));
+
+  //prevent attack from NoSQL query
+  app.use(mongoSanitize());
+
+  // prvent XSS attack
+  app.use(xss());
 
   return app;
 };

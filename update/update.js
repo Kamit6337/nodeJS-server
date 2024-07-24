@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { environment } from "../utils/environment.js";
-import { User } from "../models/UserModel.js";
 
 // Connect to MongoDB
 mongoose.connect(environment.mongoDB_url, {});

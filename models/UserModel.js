@@ -1,8 +1,6 @@
 import mongoose from "mongoose";
 import validation from "validator";
 import bcrypt from "bcryptjs";
-import { environment } from "../utils/environment.js";
-import { Notebook } from "../models/NotebookModel.js";
 
 const userSchema = new mongoose.Schema(
   {
@@ -65,20 +63,12 @@ userSchema.methods.checkPassword = function (given_password) {
 userSchema.pre("save", function (next) {
   // Check if there's a password to hash
   if (this.password) {
-    this.password = bcrypt.hashSync(this.password, environment.SALT_ROUND);
+    this.password = bcrypt.hashSync(this.password, 12);
   }
 
   next();
 });
 
-userSchema.pre("save", async function (next) {
-  await Notebook.create({
-    user: this._id,
-    title: "My Notebook",
-    primary: true,
-  });
+const User = mongoose.model("User", userSchema);
 
-  next();
-});
-
-export const User = mongoose.model("User", userSchema);
+export default User;

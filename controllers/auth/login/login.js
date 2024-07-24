@@ -1,10 +1,7 @@
 import HandleGlobalError from "../../../utils/HandleGlobalError.js";
 import catchAsyncError from "../../../utils/catchAsyncError.js";
-import generateWebToken from "../../../utils/generateWebToken.js";
-import { environment } from "../../../utils/environment.js";
-import { User } from "../../../models/UserModel.js";
-
-const PRODUCTION = "production";
+import User from "../../../models/UserModel.js";
+import cookieOptions from "../../../utils/cookieOptions.js";
 
 const login = catchAsyncError(async (req, res, next) => {
   const { email, password } = req.body;
@@ -18,7 +15,6 @@ const login = catchAsyncError(async (req, res, next) => {
 
   const findUser = await User.findOne({ email }).select("+password");
 
-  //   MARK: IF USER DOES NOT EXIST WITH THAT PASSWORD THROW ERROR
   if (!findUser) {
     return next(new HandleGlobalError("Email or Password is incorrect", 404));
   }
@@ -31,22 +27,14 @@ const login = catchAsyncError(async (req, res, next) => {
   }
 
   //   MARK: USER EMAIL AND PASSWORD IS CONFIRMED, SEND TOKEN AND MAKE LOGIN
-  const token = generateWebToken({
-    id: findUser._id,
-    role: findUser.role,
-  });
+  const token = encrypt(
+    JSON.stringify({
+      id: findUser._id,
+      role: findUser.role,
+    })
+  );
 
-  const cookieOptions = {
-    maxAge: environment.JWT_EXPIRES_IN,
-    httpOnly: true,
-  };
-
-  if (environment.NODE_ENV === PRODUCTION) {
-    cookieOptions.secure = true;
-    cookieOptions.sameSite = "None";
-  }
-
-  res.cookie("token", token, cookieOptions);
+  res.cookie("_use", token, cookieOptions);
 
   res.status(200).json({
     message: "Login Successfully",
