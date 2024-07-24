@@ -12,3 +12,5 @@
 - MY_GMAIL_PASSWORD (16 character password)
 - ENCRYPTION_KEY (MUST be 32 character secret key of length)
 - ENCRYPTION_IV (MUST be 16 character secret key of length)
+
+All environment variable is required for work correctly

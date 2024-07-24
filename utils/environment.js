@@ -13,4 +13,5 @@ export const environment = {
   MY_GMAIL_PASSWORD: process.env.MY_GMAIL_PASSWORD,
   ENCRYPTION_KEY: process.env.ENCRYPTION_KEY, // Must be 256 bits (32 characters)
   ENCRYPTION_IV: process.env.ENCRYPTION_IV, // Must be 128 bits (16 characters)
+  SENTRY_DSN: process.env.SENTRY_DSN,
 };
