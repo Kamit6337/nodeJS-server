@@ -6,7 +6,7 @@ import connectToDB from "./utils/connectToDB.js";
 
 const PORT = environment.PORT || 8080;
 
-console.log("Connecting to MongoDB...");
+
 
 (async () => {
   try {

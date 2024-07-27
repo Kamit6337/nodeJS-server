@@ -29,7 +29,7 @@ app.use(limiter);
 
 // custom-routes
 
-// The error handler must be registered before any other error middleware and after all controllers
+// NOTE: The error handler must be registered before any other error middleware and after all controllers
 Sentry.setupExpressErrorHandler(app);
 
 // NOTE: UNIDENTIFIED ROUTES

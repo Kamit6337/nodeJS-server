@@ -27,7 +27,7 @@ const verifySignup = catchAsyncError(async (req, res, next) => {
 
   const { otp, name, email, password } = decrypt(_sig);
 
-  if (otp !== userOtp) {
+  if (otp !== +userOtp) {
     return next(
       new HandleGlobalError("OTP is incorrect. Please provide correct OTP")
     );
@@ -52,6 +52,8 @@ const verifySignup = catchAsyncError(async (req, res, next) => {
     id: createUser._id,
     role: createUser.role,
   });
+
+  res.clearCookie("_sig", cookieOptions);
 
   res.cookie("_use", token, cookieOptions);
 

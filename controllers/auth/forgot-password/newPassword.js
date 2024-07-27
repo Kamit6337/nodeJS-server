@@ -1,8 +1,7 @@
-import { User } from "../../../models/UserModel.js";
+import User from "../../../models/UserModel.js";
 import HandleGlobalError from "../../../utils/HandleGlobalError.js";
 import catchAsyncError from "../../../utils/catchAsyncError.js";
-import { environment } from "../../../utils/environment.js";
-import verifyWebToken from "../../../utils/verifyWebToken.js";
+import { decrypt } from "../../../utils/encryption/encryptAndDecrypt.js";
 import bcrypt from "bcryptjs";
 
 const newPassword = catchAsyncError(async (req, res, next) => {
@@ -12,11 +11,11 @@ const newPassword = catchAsyncError(async (req, res, next) => {
     return next(new HandleGlobalError("All fields is required", 404));
   }
 
-  const decoded = verifyWebToken(token);
+  const decoded = decrypt(token);
 
   const currentDate = Date.now();
 
-  if (currentDate > decoded.expire) {
+  if (currentDate > decoded.exp) {
     return next(
       new HandleGlobalError(
         "It's time out. Click again on Forgot Password to send link",
@@ -29,7 +28,7 @@ const newPassword = catchAsyncError(async (req, res, next) => {
     return next(new HandleGlobalError("Issue in create new Password"));
   }
 
-  const hashPassword = bcrypt.hashSync(password, environment.SALT_ROUND);
+  const hashPassword = bcrypt.hashSync(password, 12);
 
   await User.findOneAndUpdate(
     {

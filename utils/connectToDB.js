@@ -10,10 +10,7 @@ const connectToDB = async () => {
 
   try {
     mongoose.set("strictQuery", true);
-    await mongoose.connect(environment.MONGO_DB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(environment.MONGO_DB_URI);
     isDatabaseConnected = true;
     console.log("Connected to MongoDB");
   } catch (error) {
@@ -22,9 +19,10 @@ const connectToDB = async () => {
   }
 };
 
-mongoose.connection.on("disconnected", () => {
+mongoose.connection.on("disconnected", async () => {
   isDatabaseConnected = false;
   console.log("Disconnected from MongoDB");
+  await connectToDB();
 });
 
 export default connectToDB;

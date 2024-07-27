@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
+      trim: true,
     },
     email: {
       type: String,
@@ -23,6 +24,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
       select: false,
+      trim: true,
     },
     photo: {
       type: String,
@@ -55,7 +57,7 @@ userSchema.methods.checkPassword = function (given_password) {
   const checkPassword = bcrypt.compareSync(
     String(given_password),
     this.password
-  ); // Boolean
+  );
 
   return checkPassword;
 };

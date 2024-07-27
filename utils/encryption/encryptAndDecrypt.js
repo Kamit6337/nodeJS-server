@@ -6,35 +6,32 @@ const ENCRYPTION_IV = environment.ENCRYPTION_IV;
 
 const algorithm = "aes-256-cbc";
 
-if (!ENCRYPTION_KEY || !ENCRYPTION_IV) {
-  throw new Error(
-    "Encryption key and IV must be defined in environment variables"
-  );
-}
-
-export const encrypt = (obj) => {
-  const objStr = JSON.stringify({ ...obj, iat: Date.now(), exp: Date.now() });
+export const encrypt = (obj, expires = 0) => {
+  const objStr = JSON.stringify({
+    ...obj,
+    iat: Date.now(),
+    exp: Date.now() + expires,
+  });
 
   const cipher = crypto.createCipheriv(
     algorithm,
     Buffer.from(ENCRYPTION_KEY, "hex"),
     Buffer.from(ENCRYPTION_IV, "hex")
   );
-  let encrypted = cipher.update(objStr);
-  encrypted = Buffer.concat([encrypted, cipher.final()]);
-  return encrypted.toString("hex");
+  let encrypted = cipher.update(objStr, "utf8", "hex");
+  encrypted += cipher.final("hex");
+  return encrypted;
 };
 
 export const decrypt = (encryptedText) => {
   try {
-    const encryptedBuffer = Buffer.from(encryptedText, "hex");
     const decipher = crypto.createDecipheriv(
       algorithm,
       Buffer.from(ENCRYPTION_KEY, "hex"),
       Buffer.from(ENCRYPTION_IV, "hex")
     );
-    let decrypted = decipher.update(encryptedBuffer);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    let decrypted = decipher.update(encryptedText, "hex", "utf8");
+    decrypted += decipher.final("utf8");
     const jsonString = decrypted.toString();
     return JSON.parse(jsonString);
   } catch (error) {
